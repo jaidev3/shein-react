@@ -4,11 +4,18 @@ import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
 import { useNavigate } from "react-router-dom";
 import { useRecentlyViewed } from "../context/RecentlyViewedContext";
-import { Container, Grid, Typography, Box, Button, Rating, Tabs, Tab, Select, MenuItem, FormControl, InputLabel, Breadcrumbs, Link, IconButton, Tooltip } from "@mui/material";
+import { 
+  Container, Grid, Typography, Box, Button, Rating, Tabs, 
+  Tab, Select, MenuItem, FormControl, InputLabel, Breadcrumbs, 
+  Link, IconButton, Tooltip, Paper, Chip, Divider, Zoom 
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import StraightenIcon from "@mui/icons-material/Straighten";
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import AssignmentReturnIcon from '@mui/icons-material/AssignmentReturn';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Navigation from "../components/Navigation";
 import SizeGuide from "../components/SizeGuide";
 import ProductReviews from "../components/ProductReviews";
@@ -18,8 +25,15 @@ import SizeRecommendation from "../components/SizeRecommendation";
 
 const ProductImage = styled("img")`
   width: 100%;
-  height: auto;
+  height: 600px;
   object-fit: cover;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+  cursor: zoom-in;
+  
+  &:hover {
+    transform: scale(1.02);
+  }
 `;
 
 const ThumbnailImage = styled("img")`
@@ -27,25 +41,48 @@ const ThumbnailImage = styled("img")`
   height: 100px;
   object-fit: cover;
   cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
   border: 2px solid ${(props) => (props.selected ? "#000" : "transparent")};
+  
   &:hover {
     border-color: #666;
+    transform: translateY(-2px);
   }
 `;
 
 const PriceText = styled(Typography)`
   color: #ff4081;
-  font-weight: bold;
+  font-weight: 600;
+  font-size: 1.8rem;
 `;
 
 const SizeButton = styled(Button)`
   min-width: 60px;
   margin: 0 8px 8px 0;
+  border-radius: 20px;
+  padding: 8px 16px;
   border-color: ${(props) => (props.selected ? "#000" : "#ddd")};
-  color: ${(props) => (props.selected ? "#000" : "#666")};
+  background-color: ${(props) => (props.selected ? "#000" : "transparent")};
+  color: ${(props) => (props.selected ? "#fff" : "#666")};
+  
   &:hover {
+    background-color: ${(props) => (props.selected ? "#000" : "#f5f5f5")};
     border-color: #000;
   }
+`;
+
+const StyledTab = styled(Tab)`
+  text-transform: none;
+  font-weight: 500;
+  font-size: 1rem;
+`;
+
+const FeatureChip = styled(Chip)`
+  margin: 4px;
+  background-color: #f8f8f8;
+  border: 1px solid #eee;
+  font-weight: 500;
 `;
 
 const TabPanel = ({ children, value, index }) => <div hidden={value !== index}>{value === index && <Box sx={{ py: 3 }}>{children}</Box>}</div>;
@@ -57,7 +94,6 @@ const ProductDetails = () => {
   const { addToRecentlyViewed, recentlyViewed } = useRecentlyViewed();
   const navigate = useNavigate();
 
-  // Move product data declaration here, before the hooks
   const product = useMemo(() => {
     return {
       id,
@@ -68,10 +104,10 @@ const ProductDetails = () => {
       rating: 4.5,
       reviewCount: 128,
       images: [
-        "https://img.ltwebstatic.com/images3_ach/2021/09/27/16327137893ab12738106a1ef5ea2da1435b13beec.webp",
-        "https://img.ltwebstatic.com/images3_ach/2021/09/27/16327137893ab12738106a1ef5ea2da1435b13beec.webp",
-        "https://img.ltwebstatic.com/images3_ach/2021/09/27/16327137893ab12738106a1ef5ea2da1435b13beec.webp",
-        "https://img.ltwebstatic.com/images3_ach/2021/09/27/16327137893ab12738106a1ef5ea2da1435b13beec.webp",
+        "https://img.ltwebstatic.com/images3_pi/2021/09/06/163089114277131b1e549b130619aae6eeeb15d2a8_thumbnail_900x.webp",
+        "https://img.ltwebstatic.com/images3_pi/2021/08/09/1628478723aa39431759a7ca94d5e5b4dd84332937_thumbnail_900x.webp",
+        "https://img.ltwebstatic.com/images3_pi/2019/09/27/1569571052b04cb2dd11ecd58f0c5f4d2ef4635f06_thumbnail_900x.webp",
+        "https://img.ltwebstatic.com/images3_pi/2021/08/17/16291855517a5b34a6476a3ffedd26c8c6569f2d8d_thumbnail_900x.webp",
       ],
       sizes: ["XS", "S", "M", "L", "XL"],
       details: ["Material: 100% Polyester", "Length: Maxi", "Pattern Type: Floral", "Season: Summer", "Style: Casual"],
@@ -119,14 +155,13 @@ const ProductDetails = () => {
     }
   };
 
-  // Mock recommended products data
   const recommendedProducts = [
     {
       id: 2,
       name: "Striped Summer Dress",
       price: 59.99,
       salePrice: 49.99,
-      image: "/images/dress2.jpg",
+      image: "https://img.ltwebstatic.com/images3_pi/2020/11/25/16062670368404cbe1beacd34657c120ed1afb2dfa_thumbnail_900x.webp",
       onSale: true,
       rating: 4.2,
       reviews: 89,
@@ -135,7 +170,7 @@ const ProductDetails = () => {
       id: 3,
       name: "Casual Denim Dress",
       price: 69.99,
-      image: "/images/dress3.jpg",
+      image: "https://img.ltwebstatic.com/images3_pi/2020/06/08/15916029351338614af1845fc62b0dd129c3ebd0b1_thumbnail_900x.webp",
       onSale: false,
       rating: 4.7,
       reviews: 156,
@@ -145,7 +180,7 @@ const ProductDetails = () => {
       name: "Bohemian Maxi Dress",
       price: 79.99,
       salePrice: 64.99,
-      image: "/images/dress4.jpg",
+      image: "https://img.ltwebstatic.com/images3_pi/2020/10/30/160402629168a84cfd76df41573d275b390532a5f1_thumbnail_900x.webp",
       onSale: true,
       rating: 4.4,
       reviews: 112,
@@ -153,60 +188,71 @@ const ProductDetails = () => {
   ];
 
   return (
-    <>
-      {/* <Navigation /> */}
-      <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Breadcrumbs sx={{ mb: 3 }}>
-          <Link href="/" underline="hover" color="inherit">
-            Home
-          </Link>
-          <Link href="/women" underline="hover" color="inherit">
-            Women
-          </Link>
-          <Typography color="text.primary">Dresses</Typography>
-        </Breadcrumbs>
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 8 }}>
+      <Breadcrumbs sx={{ mb: 3 }}>
+        <Link href="/" underline="hover" color="inherit">
+          Home
+        </Link>
+        <Link href="/women" underline="hover" color="inherit">
+          Women
+        </Link>
+        <Typography color="text.primary">{product.category}</Typography>
+      </Breadcrumbs>
 
-        <Grid container spacing={4}>
-          {/* Product Images */}
-          <Grid item xs={12} md={7}>
-            <Box sx={{ mb: 2 }}>
-              <ProductImage src={product.images[selectedImage]} alt={product.name} />
-            </Box>
-            <Box sx={{ display: "flex", gap: 2 }}>
+      <Grid container spacing={4}>
+        {/* Product Images */}
+        <Grid item xs={12} md={7}>
+          <Paper elevation={0} sx={{ p: 2, backgroundColor: '#f8f8f8', borderRadius: 2 }}>
+            <Zoom in={true}>
+              <Box>
+                <ProductImage src={product.images[selectedImage]} alt={product.name} />
+              </Box>
+            </Zoom>
+            <Box sx={{ display: "flex", gap: 2, mt: 2, justifyContent: "center" }}>
               {product.images.map((image, index) => (
-                <ThumbnailImage key={index} src={image} alt={`${product.name} ${index + 1}`} selected={selectedImage === index} onClick={() => setSelectedImage(index)} />
+                <ThumbnailImage
+                  key={index}
+                  src={image}
+                  alt={`${product.name} ${index + 1}`}
+                  selected={selectedImage === index}
+                  onClick={() => setSelectedImage(index)}
+                />
               ))}
             </Box>
-          </Grid>
+          </Paper>
+        </Grid>
 
-          {/* Product Info */}
-          <Grid item xs={12} md={5}>
-            <Typography variant="h4" component="h1" gutterBottom>
+        {/* Product Info */}
+        <Grid item xs={12} md={5}>
+          <Box sx={{ position: 'sticky', top: 20 }}>
+            <Typography variant="h4" component="h1" sx={{ fontWeight: 600, mb: 2 }}>
               {product.name}
             </Typography>
 
-            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
               <Rating value={product.rating} precision={0.5} readOnly />
-              <Typography variant="body2" sx={{ ml: 1 }}>
+              <Typography variant="body2" sx={{ ml: 1, color: '#666' }}>
                 ({product.reviewCount} reviews)
               </Typography>
             </Box>
 
-            <Box sx={{ mb: 3 }}>
-              <PriceText variant="h5" component="span">
+            <Box sx={{ mb: 4 }}>
+              <PriceText component="span">
                 ${product.price}
               </PriceText>
               {product.originalPrice && (
-                <Typography variant="body1" component="span" sx={{ textDecoration: "line-through", ml: 2, color: "#666" }}>
+                <Typography variant="h6" component="span" sx={{ textDecoration: "line-through", ml: 2, color: "#666" }}>
                   ${product.originalPrice}
                 </Typography>
               )}
             </Box>
 
-            <Box sx={{ mb: 3 }}>
-              <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                <Typography variant="subtitle1" sx={{ mr: 2 }}>
-                  Size:
+            <Divider sx={{ mb: 3 }} />
+
+            <Box sx={{ mb: 4 }}>
+              <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                <Typography variant="h6" sx={{ fontWeight: 500 }}>
+                  Size
                 </Typography>
                 <Tooltip title="Find your perfect size">
                   <IconButton size="small" onClick={() => setShowSizeRecommendation(true)} sx={{ ml: 1 }}>
@@ -216,28 +262,26 @@ const ProductDetails = () => {
               </Box>
               <Box>
                 {product.sizes.map((size) => (
-                  <SizeButton key={size} variant="outlined" selected={selectedSize === size} onClick={() => setSelectedSize(size)}>
+                  <SizeButton
+                    key={size}
+                    variant="outlined"
+                    selected={selectedSize === size}
+                    onClick={() => setSelectedSize(size)}
+                  >
                     {size}
                   </SizeButton>
                 ))}
               </Box>
             </Box>
 
-            {showSizeRecommendation && (
-              <SizeRecommendation
-                category={product.category}
-                sizes={product.sizes}
-                onSizeSelect={(size) => {
-                  setSelectedSize(size);
-                  setShowSizeRecommendation(false);
-                }}
-              />
-            )}
-
-            <Box sx={{ mb: 3 }}>
-              <FormControl sx={{ minWidth: 120 }}>
+            <Box sx={{ mb: 4 }}>
+              <FormControl fullWidth variant="outlined">
                 <InputLabel>Quantity</InputLabel>
-                <Select value={quantity} label="Quantity" onChange={(e) => setQuantity(e.target.value)}>
+                <Select
+                  value={quantity}
+                  label="Quantity"
+                  onChange={(e) => setQuantity(e.target.value)}
+                >
                   {[1, 2, 3, 4, 5].map((num) => (
                     <MenuItem key={num} value={num}>
                       {num}
@@ -248,18 +292,69 @@ const ProductDetails = () => {
             </Box>
 
             <Box sx={{ display: "flex", gap: 2, mb: 4 }}>
-              <Button variant="contained" size="large" startIcon={<ShoppingCartIcon />} onClick={handleAddToCart} fullWidth>
+              <Button
+                variant="contained"
+                size="large"
+                startIcon={<ShoppingCartIcon />}
+                onClick={handleAddToCart}
+                fullWidth
+                sx={{
+                  py: 1.5,
+                  backgroundColor: '#000',
+                  '&:hover': { backgroundColor: '#333' }
+                }}
+              >
                 Add to Cart
               </Button>
-              <Button variant="outlined" size="large" startIcon={<FavoriteIcon />} onClick={handleWishlistClick} color={isInWishlistState ? "error" : "primary"}>
-                {isInWishlistState ? "Remove from Wishlist" : "Add to Wishlist"}
+              <Button
+                variant="outlined"
+                size="large"
+                startIcon={<FavoriteIcon />}
+                onClick={handleWishlistClick}
+                color={isInWishlistState ? "error" : "primary"}
+                sx={{ py: 1.5 }}
+              >
+                {isInWishlistState ? "Saved" : "Save"}
               </Button>
             </Box>
 
-            <Tabs value={tabValue} onChange={(e, newValue) => setTabValue(newValue)} sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <Tab label="Details" />
-              <Tab label="Size Guide" />
-              <Tab label="Reviews" />
+            <Paper variant="outlined" sx={{ p: 2, mb: 4 }}>
+              <Box sx={{ display: 'flex', gap: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <LocalShippingIcon />
+                  <Typography variant="body2">Free Shipping</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <AssignmentReturnIcon />
+                  <Typography variant="body2">Free Returns</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <CheckCircleIcon />
+                  <Typography variant="body2">In Stock</Typography>
+                </Box>
+              </Box>
+            </Paper>
+
+            <Box sx={{ mb: 4 }}>
+              {product.details.map((detail, index) => (
+                <FeatureChip key={index} label={detail} />
+              ))}
+            </Box>
+
+            <Tabs 
+              value={tabValue} 
+              onChange={(e, newValue) => setTabValue(newValue)}
+              sx={{ 
+                borderBottom: 1, 
+                borderColor: "divider",
+                '& .MuiTabs-indicator': {
+                  backgroundColor: '#000'
+                }
+              }}
+            >
+              <StyledTab label="Details" />
+              <StyledTab label="Size Guide" />
+              <StyledTab label="Reviews" />
             </Tabs>
 
             <TabPanel value={tabValue} index={0}>
@@ -313,49 +408,48 @@ const ProductDetails = () => {
                 ]}
               />
             </TabPanel>
-          </Grid>
+          </Box>
         </Grid>
+      </Grid>
 
-        <RelatedProducts
-          products={[
-            {
-              id: "dress2",
-              name: "Floral Wrap Dress",
-              price: 34.99,
-              originalPrice: 45.99,
-              images: ["https://img.ltwebstatic.com/images3_ach/2021/09/27/16327137893ab12738106a1ef5ea2da1435b13beec.webp"],
-            },
-            {
-              id: "dress3",
-              name: "Summer Midi Dress",
-              price: 39.99,
-              images: ["https://img.ltwebstatic.com/images3_ach/2021/09/27/16327137893ab12738106a1ef5ea2da1435b13beec.webp"],
-            },
-            {
-              id: "dress4",
-              name: "Bohemian Maxi Dress",
-              price: 49.99,
-              originalPrice: 59.99,
-              images: ["https://img.ltwebstatic.com/images3_ach/2021/09/27/16327137893ab12738106a1ef5ea2da1435b13beec.webp"],
-            },
-            {
-              id: "dress5",
-              name: "Casual Sundress",
-              price: 29.99,
-              images: ["https://img.ltwebstatic.com/images3_ach/2021/09/27/16327137893ab12738106a1ef5ea2da1435b13beec.webp"],
-            },
-          ]}
-          currentProductId={id}
-        />
+      <RelatedProducts
+        products={[
+          {
+            id: "dress2",
+            name: "Floral Wrap Dress",
+            price: 34.99,
+            originalPrice: 45.99,
+            images: ["https://img.ltwebstatic.com/images3_pi/2021/07/30/16276489837dd2c777613922bd9715dec5e45ee7b9_thumbnail_900x.webp"],
+          },
+          {
+            id: "dress3",
+            name: "Summer Midi Dress",
+            price: 39.99,
+            images: ["https://img.ltwebstatic.com/images3_pi/2020/06/08/15916029351338614af1845fc62b0dd129c3ebd0b1_thumbnail_900x.webp"],
+          },
+          {
+            id: "dress4",
+            name: "Bohemian Maxi Dress",
+            price: 49.99,
+            originalPrice: 59.99,
+            images: ["https://img.ltwebstatic.com/images3_pi/2021/09/09/1631167018c44e6c6638884ebba6cb0b94202c3c44_thumbnail_900x.webp"],
+          },
+          {
+            id: "dress5",
+            name: "Casual Sundress",
+            price: 29.99,
+            images: ["https://img.ltwebstatic.com/images3_pi/2021/09/06/16308912973c567d8b7babfde1237fddd635413c7f_thumbnail_900x.webp"],
+          },
+        ]}
+        currentProductId={id}
+      />
 
-        {/* Product Recommendations */}
-        <Container maxWidth="lg">
-          <ProductRecommendations title="You May Also Like" products={recommendedProducts} type="grid" />
+      <Container maxWidth="lg">
+        <ProductRecommendations title="You May Also Like" products={recommendedProducts} type="grid" />
 
-          {recentlyViewed.length > 0 && <ProductRecommendations title="Recently Viewed" products={recentlyViewed} type="grid" />}
-        </Container>
+        {recentlyViewed.length > 0 && <ProductRecommendations title="Recently Viewed" products={recentlyViewed} type="grid" />}
       </Container>
-    </>
+    </Container>
   );
 };
 

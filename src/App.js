@@ -22,6 +22,7 @@ import UserProfile from './pages/UserProfile';
 import SearchResults from './pages/SearchResults';
 import { RecentlyViewedProvider } from './context/RecentlyViewedContext';
 import Layout from './components/layout/Layout';
+import ComingSoon from './pages/ComingSoon';
 
 // Placeholder components
 const PlaceOrder = () => <div>Place Order</div>;
@@ -108,6 +109,10 @@ const router = createBrowserRouter([
       {
         path: "search",
         element: <SearchResults />
+      },
+      {
+        path: "coming-soon",
+        element: <ComingSoon />
       }
     ]
   }
