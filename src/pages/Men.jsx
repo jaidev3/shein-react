@@ -1,12 +1,65 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navigation from '../components/Navigation';
 import ProductList from '../components/ProductList';
+import { Pagination, Stack } from '@mui/material';
 
 const Men = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 12;
+
+  // Calculate pagination indexes
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = menProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  const totalPages = Math.ceil(menProducts.length / productsPerPage);
+
+  // Updated handle page changes with slower smooth scroll
+  const handlePageChange = (event, pageNumber) => {
+    setCurrentPage(pageNumber);
+    const duration = 1000; // Increase this value for slower scroll (in milliseconds)
+    const start = window.scrollY;
+    const startTime = performance.now();
+
+    const animateScroll = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // Easing function for smoother animation
+      const easeInOutCubic = progress => {
+        return progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+      };
+
+      window.scrollTo({
+        top: start * (1 - easeInOutCubic(progress)),
+      });
+
+      if (progress < 1) {
+        requestAnimationFrame(animateScroll);
+      }
+    };
+
+    requestAnimationFrame(animateScroll);
+  };
+
   return (
     <>
       {/* <Navigation /> */}
-      <ProductList category="Men's Fashion" products={menProducts} />
+      <ProductList category="Men's Fashion" products={currentProducts} />
+      
+      {/* MUI Pagination */}
+      <Stack spacing={2} alignItems="center" sx={{ my: 4 }}>
+        <Pagination 
+          count={totalPages}
+          page={currentPage}
+          onChange={handlePageChange}
+          color="primary"
+          size="large"
+          showFirstButton 
+          showLastButton
+        />
+      </Stack>
     </>
   );
 };
