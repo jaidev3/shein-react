@@ -1,18 +1,11 @@
 import React from "react";
-import { Grid, Card, CardMedia, CardContent, Typography, Box, Container } from "@mui/material";
+import { Card, CardMedia, CardContent, Typography, Box, Container } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { Link } from "react-router-dom";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
 const GalleryContainer = styled("div")`
-  padding: 40px 0;
   overflow-x: auto;
-`;
-
-const StyledGrid = styled(Grid)`
-  flex-wrap: nowrap;
-  width: max-content;
-  padding: 20px 0;
 `;
 
 const StyledCard = styled(Card)`
@@ -117,6 +110,17 @@ const ImageInfo = styled(Box)`
   }
 `;
 
+const StyledContainer = styled(Box)`
+  display: flex;
+  overflow-x: auto;
+  padding: 20px 0;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
 const StyleGallery = () => {
   const styles = [
     {
@@ -159,28 +163,26 @@ const StyleGallery = () => {
   return (
     <GalleryContainer>
       <Container maxWidth="xl">
-        <StyledGrid container spacing={0}>
+        <StyledContainer>
           {styles.map((style) => (
-            <Grid item key={style.id}>
-              <StyledCard>
-                <StyleImage image={style.image} title={style.description} />
-                <LikesBox>
-                  <FavoriteIcon sx={{ fontSize: 16, mr: 1 }} />
-                  <Typography variant="body2">{style.likes}</Typography>
-                </LikesBox>
-                <OverlayContent>
-                  <BuyButton href="#">Buy Now</BuyButton>
-                </OverlayContent>
-                <ImageInfo>
-                  <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                    {style.username}
-                  </Typography>
-                  <Typography variant="body2">{style.description}</Typography>
-                </ImageInfo>
-              </StyledCard>
-            </Grid>
+            <StyledCard key={style.id}>
+              <StyleImage image={style.image} title={style.description} />
+              <LikesBox>
+                <FavoriteIcon sx={{ fontSize: 16, mr: 1 }} />
+                <Typography variant="body2">{style.likes}</Typography>
+              </LikesBox>
+              <OverlayContent>
+                <BuyButton href="#">Buy Now</BuyButton>
+              </OverlayContent>
+              <ImageInfo>
+                <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                  {style.username}
+                </Typography>
+                <Typography variant="body2">{style.description}</Typography>
+              </ImageInfo>
+            </StyledCard>
           ))}
-        </StyledGrid>
+        </StyledContainer>
       </Container>
     </GalleryContainer>
   );

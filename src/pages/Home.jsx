@@ -102,11 +102,11 @@ const Home = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
-      <Box component="section" sx={{ mb: 6 }}>
+      {/* <Box component="section" sx={{ mb: 6 }}>
         <Link to="/women">
           <BannerImage src="https://images.unsplash.com/photo-1445205170230-053b83016050?q=80&w=1000" alt="Women's Fashion" />
         </Link>
-      </Box>
+      </Box> */}
 
       <Box component="section" sx={{ mb: 6 }}>
         <Typography variant="h4" component="h2" sx={{ mb: 4, textAlign: "center", color: "#3f51b5" }}>
@@ -153,7 +153,7 @@ const Home = () => {
       </Box>
 
       <Box component="section" sx={{ mb: 6 }}>
-        <Typography variant="h4" component="h2" sx={{ mb: 4, textAlign: "center", color: "#3f51b5" }}>
+        <Typography variant="h4" component="h2" sx={{ textAlign: "center", color: "#3f51b5" }}>
           Style Gallery
         </Typography>
         <StyleGallery />
